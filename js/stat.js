@@ -1,5 +1,4 @@
 'use strict';
-
 var CLOUD_HEIGHT = 270;
 var CLOUD_X = 100;
 var CLOUD_Y = 10;
@@ -13,45 +12,41 @@ var COLOR_PLAYER = 'rgba(255, 0, 0, 1)';
 
 // Находим максимальное значение в массиве
 var getMaxTime = function (arr) {
-  var maxValue = arr[0];
+  var maxValue = 0;
   for (var i = 0; i < arr.length; i++) {
-    if (arr[i] > maxValue) {
+    if (maxValue < arr[i]) {
       maxValue = arr[i];
     }
   }
   return maxValue;
 };
-
 // Функция определения рандомного синего цвета
 var getRandomBlue = function () {
   return 'hsl(240,' + Math.floor(Math.random() * 101) + '%, 40%)';
 };
 
-// Облако методом line.to
-window.renderStatistics = function (ctx, names, times) {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+// Функция отрисовки облака
+var arrayOfCloud = [[100, 10], [110, 20], [320, 44], [530, 20], [530, 290], [320, 276], [110, 290]];
+var buildCloud = function (array, ctx, color, gap) {
+  ctx.save();
+  ctx.fillStyle = color;
+  gap = gap || 0;
   ctx.beginPath();
-  ctx.moveTo(110, 20);
-  ctx.lineTo(320, 44);
-  ctx.lineTo(530, 20);
-  ctx.lineTo(530, 290);
-  ctx.lineTo(320, 276);
-  ctx.lineTo(110, 290);
+  ctx.moveTo(arrayOfCloud[0][0] + gap, arrayOfCloud[0][1] + gap);
+  for (var i = 1; i < array.length; i++) {
+    ctx.lineTo(arrayOfCloud[i][0] + gap, arrayOfCloud[i][1] + gap);
+  }
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
+  ctx.restore();
+};
 
-  ctx.fillStyle = 'white';
-  ctx.beginPath();
-  ctx.moveTo(100, 10);
-  ctx.lineTo(310, 34);
-  ctx.lineTo(520, 10);
-  ctx.lineTo(520, 280);
-  ctx.lineTo(310, 266);
-  ctx.lineTo(100, 280);
-  ctx.closePath();
-  ctx.stroke();
-  ctx.fill();
+// Вызов функции облака
+window.renderStatistics = function (ctx, names, times) {
+  ctx.save();
+  buildCloud(arrayOfCloud, ctx, 'rgba(0, 0, 0, 0.7)', 10);
+  buildCloud(arrayOfCloud, ctx, 'white');
 
   // Текст внутри облака
   ctx.font = '16px PT Mono';
@@ -73,7 +68,8 @@ window.renderStatistics = function (ctx, names, times) {
     }
     ctx.fillText(names[i], xCoordinate, CLOUD_HEIGHT - USER_GAP + GAP);
     ctx.fillRect(xCoordinate, CLOUD_HEIGHT - USER_GAP, BAR_WIDTH, -currentBarHeight);
-    ctx.fillText(Math.floor(times[i]), xCoordinate, CLOUD_HEIGHT - currentBarHeight - FONT_GAP - USER_GAP);
+    ctx.fillText(Math.round(times[i]), xCoordinate, CLOUD_HEIGHT - currentBarHeight - FONT_GAP - USER_GAP);
+    ctx.restore();
   }
 };
 
