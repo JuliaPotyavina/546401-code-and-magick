@@ -33,30 +33,29 @@ var generateWizards = function (maxWizards, names, surnames, coats, eyes) {
   return wizards;
 };
 
-var wizardCollection = generateWizards(NUMBER_OF_WIZARDS, wizardNames, wizardSurnames, coatColors, eyeColors);
-var template = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
-
-var renderWizard = function (wizards, index) {
-  var wizard = template.cloneNode(true);
+var renderWizard = function (wizard) {
+  var template = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+  var wizardTemplate = template.cloneNode(true);
   var wizardInfo = '';
   if (Math.floor(Math.random() * 11) >= 5) {
-    wizardInfo = wizards[index].wizardName + ' ' + wizards[index].wizardSurname;
+    wizardInfo = wizard.wizardName + ' ' + wizard.wizardSurname;
   } else {
-    wizardInfo = wizards[index].wizardSurname + ' ' + wizards[index].wizardName;
+    wizardInfo = wizard.wizardSurname + ' ' + wizard.wizardName;
   }
 
-  wizard.querySelector('.setup-similar-label').textContent = wizardInfo;
-  wizard.querySelector('.wizard-coat').style.fill = wizards[index].wizardCoatColor;
-  wizard.querySelector('.wizard-eyes').style.fill = wizards[index].wizardEyeColor;
+  wizardTemplate.querySelector('.setup-similar-label').textContent = wizardInfo;
+  wizardTemplate.querySelector('.wizard-coat').style.fill = wizard.wizardCoatColor;
+  wizardTemplate.querySelector('.wizard-eyes').style.fill = wizard.wizardEyeColor;
 
-  return wizard;
+  return wizardTemplate;
 };
 
 var displayWizardList = function () {
   var fragment = document.createDocumentFragment();
-
+  var wizardCollection = generateWizards(NUMBER_OF_WIZARDS, wizardNames, wizardSurnames, coatColors, eyeColors);
   for (var i = 0; i < wizardCollection.length; i++) {
-    fragment.appendChild(renderWizard(wizardCollection, i));
+    fragment.appendChild(renderWizard(wizardCollection[i]));
+
   }
 
   var setupSimilarList = document.querySelector('.setup-similar-list');
